@@ -4,6 +4,7 @@ package pkg3dcube;
  *
  * @author Timoteo
  */
+import conversorAngulos.ConversorAngulos;
 import matrix.Matrix;
 
 public class Main {
@@ -22,7 +23,6 @@ public class Main {
         Matrix m1 = new Matrix(x1);
         Matrix m2 = new Matrix(x2);
         Matrix res = m1.multiplicarMatrix(m2);
-        System.out.println(res);
 
     }
 

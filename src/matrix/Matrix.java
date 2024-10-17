@@ -26,6 +26,16 @@ public class Matrix {
         }
     }
 
+    public Matrix(Matrix matrix) {
+        this(matrix.rows, matrix.columns);
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                setElement(i, j, matrix.getElement(i, j));
+            }
+        }
+    }
+
     public void setElement(int row, int col, double value) {
         if (row >= 0 && row < rows && col >= 0 && col < columns) {
             matrix[row][col] = value;
