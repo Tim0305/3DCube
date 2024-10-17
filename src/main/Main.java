@@ -1,4 +1,4 @@
-package pkg3dcube;
+package main;
 
 /**
  *
