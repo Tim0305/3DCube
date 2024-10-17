@@ -13,20 +13,42 @@ import javax.swing.JFrame;
  */
 public class CubeGUI extends JFrame {
 
-    JButton cmdArriba;
-    JButton cmdAbajo;
-    JButton cmdIzquierda;
-    JButton cmdDerecha;
-    JButton cmdZoomP;
-    JButton cmdZoomN;
+    private JButton cmdArriba;
+    private JButton cmdAbajo;
+    private JButton cmdIzquierda;
+    private JButton cmdDerecha;
+    private JButton cmdZoomP;
+    private JButton cmdZoomN;
 
-    public CubeGUI() {
+    private int width;
+    private int height;
+
+    public CubeGUI(int width, int height) {
         super();
+
+        // Incializacion de variables
+        this.width = width;
+        this.height = height;
+
+        cmdArriba = new JButton("Arriba");
+        cmdAbajo = new JButton("Abajo");
+        cmdIzquierda = new JButton("Izquierda");
+        cmdDerecha = new JButton("Derecha");
+        cmdZoomN = new JButton("Menos");
+        cmdZoomP = new JButton("Mas");
 
         config();
     }
 
-    private void config() {
+    public CubeGUI() {
+        this(500, 500);
+    }
 
+    private void config() {
+        setTitle("Cubo 3D");
+        setSize(width, height);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setResizable(false);
+        setLocationRelativeTo(null);
     }
 }
