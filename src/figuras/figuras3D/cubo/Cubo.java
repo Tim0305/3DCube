@@ -137,12 +137,42 @@ public class Cubo {
 
     private void initMatrizScale() {
         scale = new Matrix(matrizHomogenea);
-        setScale(1);
+        scale(1);
+    }
+
+    private void rotateX(double angulo) {
+        rx.setElement(1, 1, Math.cos(ConversorAngulos.toRadianes(angulo)));
+        rx.setElement(1, 2, Math.sin(ConversorAngulos.toRadianes(angulo)) * -1);
+        rx.setElement(2, 1, Math.sin(ConversorAngulos.toRadianes(angulo)));
+        rx.setElement(2, 2, Math.cos(ConversorAngulos.toRadianes(angulo)));
+    }
+
+    private void rotateY(double angulo) {
+        ry.setElement(0, 0, Math.cos(ConversorAngulos.toRadianes(angulo)));
+        ry.setElement(0, 2, Math.sin(ConversorAngulos.toRadianes(angulo)));
+        ry.setElement(2, 0, Math.sin(ConversorAngulos.toRadianes(angulo)) * -1);
+        ry.setElement(2, 2, Math.cos(ConversorAngulos.toRadianes(angulo)));
+    }
+
+    private void rotateZ(double angulo) {
+        rz.setElement(0, 0, Math.cos(ConversorAngulos.toRadianes(angulo)));
+        rz.setElement(0, 1, Math.sin(ConversorAngulos.toRadianes(angulo)) * -1);
+        rz.setElement(1, 0, Math.sin(ConversorAngulos.toRadianes(angulo)));
+        rz.setElement(1, 1, Math.cos(ConversorAngulos.toRadianes(angulo)));
+    }
+
+    private void scale(double scaleValue) {
+        if (scaleValue <= 0) {
+            throw new RuntimeException("No se puede tener un zoom nulo o negativo");
+        }
+
+        scale.setElement(0, 0, scaleValue);
+        scale.setElement(1, 1, scaleValue);
+        scale.setElement(2, 2, scaleValue);
     }
 
     private void update() {
         puntosVerticesCubo = new ArrayList<>();
-
         Matrix rotaciones = rx.multiplicarMatrix(ry).multiplicarMatrix(rz);
         Matrix resultado = scale.multiplicarMatrix(rotaciones).multiplicarMatrix(matrizPosicion);
 
@@ -163,42 +193,23 @@ public class Cubo {
         }
     }
 
-    public void rotateX(double angulo) {
-        rx.setElement(1, 1, Math.cos(ConversorAngulos.toRadianes(angulo)));
-        rx.setElement(1, 2, Math.sin(ConversorAngulos.toRadianes(angulo)) * -1);
-        rx.setElement(2, 1, Math.sin(ConversorAngulos.toRadianes(angulo)));
-        rx.setElement(2, 2, Math.cos(ConversorAngulos.toRadianes(angulo)));
-
+    public void setRotationX(double angulo) {
+        rotateX(angulo);
         update();
     }
 
-    public void rotateY(double angulo) {
-        ry.setElement(0, 0, Math.cos(ConversorAngulos.toRadianes(angulo)));
-        ry.setElement(0, 2, Math.sin(ConversorAngulos.toRadianes(angulo)));
-        ry.setElement(2, 0, Math.sin(ConversorAngulos.toRadianes(angulo)) * -1);
-        ry.setElement(2, 2, Math.cos(ConversorAngulos.toRadianes(angulo)));
-
+    public void setRotationY(double angulo) {
+        rotateY(angulo);
         update();
     }
 
-    public void rotateZ(double angulo) {
-        rz.setElement(0, 0, Math.cos(ConversorAngulos.toRadianes(angulo)));
-        rz.setElement(0, 1, Math.sin(ConversorAngulos.toRadianes(angulo)) * -1);
-        rz.setElement(1, 0, Math.sin(ConversorAngulos.toRadianes(angulo)));
-        rz.setElement(1, 1, Math.cos(ConversorAngulos.toRadianes(angulo)));
-
+    public void setRotationZ(double angulo) {
+        rotateZ(angulo);
         update();
     }
 
     public void setScale(double scaleValue) {
-        if (scaleValue <= 0) {
-            throw new RuntimeException("No se puede tener un zoom nulo o negativo");
-        }
-
-        scale.setElement(0, 0, scaleValue);
-        scale.setElement(1, 1, scaleValue);
-        scale.setElement(2, 2, scaleValue);
-
+        scale(scaleValue);
         update();
     }
 
@@ -206,7 +217,6 @@ public class Cubo {
         matrizPosicion.setElement(X_INDEX, 3, posicion.x);
         matrizPosicion.setElement(Y_INDEX, 3, posicion.y);
         matrizPosicion.setElement(Z_INDEX, 3, posicion.z);
-
         update();
     }
 

@@ -5,6 +5,7 @@ package main;
  * @author Timoteo
  */
 import conversorAngulos.ConversorAngulos;
+import gui.CubeGUI;
 import matrix.Matrix;
 
 public class Main {
@@ -14,15 +15,8 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        double[][] datosMatrizHomogenea = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
-
-        Matrix matrizHomogenea = new Matrix(datosMatrizHomogenea);
-        double[][] x1 = {{1, 5}, {3, 2}};
-        double[][] x2 = {{6, 9}, {1, 2}};
-
-        Matrix m1 = new Matrix(x1);
-        Matrix m2 = new Matrix(x2);
-        Matrix res = m1.multiplicarMatrix(m2);
+        CubeGUI cubo = new CubeGUI();
+        cubo.setVisible(true);
 
     }
 
