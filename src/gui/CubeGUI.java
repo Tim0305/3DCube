@@ -22,6 +22,7 @@ import javax.swing.JFrame;
  */
 public class CubeGUI extends JFrame implements ActionListener {
 
+    // Buttons
     private JButton cmdArriba;
     private JButton cmdAbajo;
     private JButton cmdIzquierda;
@@ -32,13 +33,18 @@ public class CubeGUI extends JFrame implements ActionListener {
     private JButton cmdRY;
     private JButton cmdRZ;
 
+    // Propiedad ventana
     private int width;
     private int height;
+
+    // Cubo
     private Cubo cubo;
-    private Punto3D posicion;
+    private Punto2D posicion;
+    private double ladoCubo;
     private int rx;
     private int ry;
     private int rz;
+    private double scale;
 
     public CubeGUI(int width, int height) {
         super();
@@ -47,6 +53,7 @@ public class CubeGUI extends JFrame implements ActionListener {
         this.width = width;
         this.height = height;
 
+        // Botones
         cmdArriba = new JButton("Arriba");
         cmdAbajo = new JButton("Abajo");
         cmdIzquierda = new JButton("Izquierda");
@@ -57,11 +64,15 @@ public class CubeGUI extends JFrame implements ActionListener {
         cmdRY = new JButton("RY");
         cmdRZ = new JButton("RZ");
 
-        cubo = new Cubo(100);
-        posicion = new Punto3D(250, 250, 0);
+        // Cubo
+        ladoCubo = 150;
+        cubo = new Cubo(ladoCubo);
+        posicion = new Punto2D(250, 150);
         rx = 0;
         ry = 0;
         rz = 0;
+        scale = 1;
+
         config();
     }
 
@@ -80,6 +91,11 @@ public class CubeGUI extends JFrame implements ActionListener {
         cmdAbajo.addActionListener(this);
         cmdDerecha.addActionListener(this);
         cmdIzquierda.addActionListener(this);
+        cmdRX.addActionListener(this);
+        cmdRY.addActionListener(this);
+        cmdRZ.addActionListener(this);
+        cmdZoomP.addActionListener(this);
+        cmdZoomN.addActionListener(this);
 
         GroupLayout gl = new GroupLayout(getContentPane());
 
@@ -123,6 +139,7 @@ public class CubeGUI extends JFrame implements ActionListener {
 
     @Override
     public void paint(Graphics g) {
+        super.paint(g);
 
         Graphics2D g2 = (Graphics2D) g;
 
@@ -141,24 +158,29 @@ public class CubeGUI extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == cmdArriba) {
             posicion.y -= 10;
-            cubo.move(posicion);
-        }
-        if (e.getSource() == cmdAbajo) {
+        } else if (e.getSource() == cmdAbajo) {
             posicion.y += 10;
-            cubo.move(posicion);
-        }
-        if (e.getSource() == cmdIzquierda) {
+        } else if (e.getSource() == cmdIzquierda) {
             posicion.x -= 10;
-            cubo.move(posicion);
-        }
-        if (e.getSource() == cmdAbajo) {
+        } else if (e.getSource() == cmdDerecha) {
             posicion.x += 10;
-            cubo.move(posicion);
-        }
-
-        if (e.getSource() == cmdRX) {
-            rx += 10;
+        } else if (e.getSource() == cmdRX) {
+            rx += 5;
             cubo.setRotationX(rx);
+        } else if (e.getSource() == cmdRY) {
+            ry += 5;
+            cubo.setRotationY(ry);
+        } else if (e.getSource() == cmdRZ) {
+            rz += 5;
+            cubo.setRotationZ(rz);
+        } else if (e.getSource() == cmdZoomP) {
+            scale += 0.1;
+            cubo.setScale(scale);
+        } else if (e.getSource() == cmdZoomN) {
+            if (scale - 0.1 > 0) {
+                scale -= 0.1;
+            }
+            cubo.setScale(scale);
         }
 
         repaint();

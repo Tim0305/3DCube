@@ -19,13 +19,9 @@ public class Cubo {
     private Matrix ry;
     private Matrix rz;
     private Matrix scale;
-    private Matrix matrizPosicion;
 
     // Propiedades fisicas del cubo
     private double lado;
-
-    // Origen
-    private Punto3D posicion;
 
     // Constantes
     private final int X_INDEX = 0;
@@ -39,7 +35,6 @@ public class Cubo {
         this.lado = lado;
 
         initMatrizHomogenea();
-        initMatrizPosicion();
         initMatrizRotacionX();
         initMatrizRotacionY();
         initMatrizRotacionZ();
@@ -50,13 +45,10 @@ public class Cubo {
         update();
     }
 
+    // Inicializacion de matrices
     private void initMatrizHomogenea() {
         double[][] datosMatrizHomogenea = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
         matrizHomogenea = new Matrix(datosMatrizHomogenea);
-    }
-
-    private void initMatrizPosicion() {
-        matrizPosicion = new Matrix(matrizHomogenea);
     }
 
     private void initMatricesTraslacion() {
@@ -140,27 +132,45 @@ public class Cubo {
         scale(1);
     }
 
+    // Rotaciones
     private void rotateX(double angulo) {
-        rx.setElement(1, 1, Math.cos(ConversorAngulos.toRadianes(angulo)));
-        rx.setElement(1, 2, Math.sin(ConversorAngulos.toRadianes(angulo)) * -1);
-        rx.setElement(2, 1, Math.sin(ConversorAngulos.toRadianes(angulo)));
-        rx.setElement(2, 2, Math.cos(ConversorAngulos.toRadianes(angulo)));
+        double radianes = ConversorAngulos.toRadianes(normalizarAngulo(angulo));
+        rx.setElement(1, 1, Math.cos(radianes));
+        rx.setElement(1, 2, -Math.sin(radianes));
+        rx.setElement(2, 1, Math.sin(radianes));
+        rx.setElement(2, 2, Math.cos(radianes));
     }
 
     private void rotateY(double angulo) {
-        ry.setElement(0, 0, Math.cos(ConversorAngulos.toRadianes(angulo)));
-        ry.setElement(0, 2, Math.sin(ConversorAngulos.toRadianes(angulo)));
-        ry.setElement(2, 0, Math.sin(ConversorAngulos.toRadianes(angulo)) * -1);
-        ry.setElement(2, 2, Math.cos(ConversorAngulos.toRadianes(angulo)));
+        double radianes = ConversorAngulos.toRadianes(normalizarAngulo(angulo));
+        ry.setElement(0, 0, Math.cos(radianes));
+        ry.setElement(0, 2, Math.sin(radianes));
+        ry.setElement(2, 0, -Math.sin(radianes));
+        ry.setElement(2, 2, Math.cos(radianes));
     }
 
     private void rotateZ(double angulo) {
-        rz.setElement(0, 0, Math.cos(ConversorAngulos.toRadianes(angulo)));
-        rz.setElement(0, 1, Math.sin(ConversorAngulos.toRadianes(angulo)) * -1);
-        rz.setElement(1, 0, Math.sin(ConversorAngulos.toRadianes(angulo)));
-        rz.setElement(1, 1, Math.cos(ConversorAngulos.toRadianes(angulo)));
+        double radianes = ConversorAngulos.toRadianes(normalizarAngulo(angulo));
+        rz.setElement(0, 0, Math.cos(radianes));
+        rz.setElement(0, 1, -Math.sin(radianes));
+        rz.setElement(1, 0, Math.sin(radianes));
+        rz.setElement(1, 1, Math.cos(radianes));
     }
 
+    private double normalizarAngulo(double angulo) {
+        if (angulo >= 0 && angulo < 360) {
+            return angulo;
+        }
+
+        angulo = angulo % 360;
+
+        if (angulo < 0) {
+            return 360 + angulo;
+        }
+        return angulo;
+    }
+
+    // Cambiar la escala del cubo
     private void scale(double scaleValue) {
         if (scaleValue <= 0) {
             throw new RuntimeException("No se puede tener un zoom nulo o negativo");
@@ -174,7 +184,7 @@ public class Cubo {
     private void update() {
         puntosVerticesCubo = new ArrayList<>();
         Matrix rotaciones = rx.multiplicarMatrix(ry).multiplicarMatrix(rz);
-        Matrix resultado = scale.multiplicarMatrix(rotaciones).multiplicarMatrix(matrizPosicion);
+        Matrix resultado = scale.multiplicarMatrix(rotaciones);
 
         // Origen
         double x = resultado.getElement(X_INDEX, 3);
@@ -210,13 +220,6 @@ public class Cubo {
 
     public void setScale(double scaleValue) {
         scale(scaleValue);
-        update();
-    }
-
-    public void move(Punto3D posicion) {
-        matrizPosicion.setElement(X_INDEX, 3, posicion.x);
-        matrizPosicion.setElement(Y_INDEX, 3, posicion.y);
-        matrizPosicion.setElement(Z_INDEX, 3, posicion.z);
         update();
     }
 
