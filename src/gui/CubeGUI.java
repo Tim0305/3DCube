@@ -29,9 +29,13 @@ public class CubeGUI extends JFrame implements ActionListener {
     private JButton cmdDerecha;
     private JButton cmdZoomP;
     private JButton cmdZoomN;
-    private JButton cmdRX;
-    private JButton cmdRY;
-    private JButton cmdRZ;
+    private JButton cmdRXP;
+    private JButton cmdRYP;
+    private JButton cmdRZP;
+    private JButton cmdRXN;
+    private JButton cmdRYN;
+    private JButton cmdRZN;
+    private JButton cmdReset;
 
     // Propiedad ventana
     private int width;
@@ -39,6 +43,7 @@ public class CubeGUI extends JFrame implements ActionListener {
 
     // Cubo
     private Cubo cubo;
+    private Punto2D origen;
     private Punto2D posicion;
     private double ladoCubo;
     private int rx;
@@ -60,13 +65,18 @@ public class CubeGUI extends JFrame implements ActionListener {
         cmdDerecha = new JButton("Derecha");
         cmdZoomP = new JButton("+");
         cmdZoomN = new JButton("-");
-        cmdRX = new JButton("RX");
-        cmdRY = new JButton("RY");
-        cmdRZ = new JButton("RZ");
+        cmdRXP = new JButton("RX+");
+        cmdRYP = new JButton("RY+");
+        cmdRZP = new JButton("RZ+");
+        cmdRXN = new JButton("RX-");
+        cmdRYN = new JButton("RY-");
+        cmdRZN = new JButton("RZ-");
+        cmdReset = new JButton("RST");
 
         // Cubo
         ladoCubo = 150;
         cubo = new Cubo(ladoCubo);
+        origen = new Punto2D(250, 150);
         posicion = new Punto2D(250, 150);
         rx = 0;
         ry = 0;
@@ -91,49 +101,77 @@ public class CubeGUI extends JFrame implements ActionListener {
         cmdAbajo.addActionListener(this);
         cmdDerecha.addActionListener(this);
         cmdIzquierda.addActionListener(this);
-        cmdRX.addActionListener(this);
-        cmdRY.addActionListener(this);
-        cmdRZ.addActionListener(this);
+        cmdRXP.addActionListener(this);
+        cmdRYP.addActionListener(this);
+        cmdRZP.addActionListener(this);
+        cmdRXN.addActionListener(this);
+        cmdRYN.addActionListener(this);
+        cmdRZN.addActionListener(this);
         cmdZoomP.addActionListener(this);
         cmdZoomN.addActionListener(this);
+        cmdReset.addActionListener(this);
 
         GroupLayout gl = new GroupLayout(getContentPane());
 
         // Horizontal Group
         gl.setAutoCreateContainerGaps(true);
         gl.setAutoCreateGaps(true);
-        gl.setHorizontalGroup(gl.createSequentialGroup()
-                .addGroup(
-                        gl.createParallelGroup()
-                                .addComponent(cmdRX, 20, 30, 50)
-                                .addComponent(cmdRY, 20, 30, 50)
-                                .addComponent(cmdRZ, 20, 30, 50)
-                                .addComponent(cmdIzquierda, 50, 100, 150))
-                .addGroup(gl.createParallelGroup()
-                        .addComponent(cmdArriba, 50, 100, 150)
-                        .addComponent(cmdAbajo, 50, 100, 150))
-                .addGroup(gl.createParallelGroup()
-                        .addComponent(cmdZoomP, 20, 30, 50)
-                        .addComponent(cmdZoomN, 20, 30, 50)
-                        .addComponent(cmdDerecha, 50, 100, 150))
+        gl.setHorizontalGroup(
+                gl.createSequentialGroup()
+                        .addGroup(
+                                gl.createParallelGroup()
+                                        .addComponent(cmdRXP, 20, 50, 60)
+                                        .addComponent(cmdRYP, 20, 50, 60)
+                                        .addComponent(cmdRZP, 20, 50, 60))
+                        .addGroup(
+                                gl.createParallelGroup()
+                                        .addComponent(cmdRXN, 20, 50, 60)
+                                        .addComponent(cmdRYN, 20, 50, 60)
+                                        .addComponent(cmdRZN, 20, 50, 60)
+                                        .addComponent(cmdIzquierda, 50, 100, 150)
+                        )
+                        .addGroup(
+                                gl.createParallelGroup()
+                                        .addComponent(cmdArriba, 50, 100, 150)
+                                        .addComponent(cmdAbajo, 50, 100, 150)
+                        )
+                        .addComponent(cmdDerecha, 50, 100, 150)
+                        .addGroup(
+                                gl.createParallelGroup()
+                                        .addComponent(cmdZoomP, 30, 60, 60)
+                                        .addComponent(cmdZoomN, 30, 60, 60)
+                                        .addComponent(cmdReset, 30, 60, 60)
+                        )
         );
 
         // Vertical Group
         gl.setVerticalGroup(
                 gl.createSequentialGroup()
                         .addContainerGap(500, 500)
-                        .addGroup(gl.createParallelGroup()
-                                .addComponent(cmdRX)
-                                .addComponent(cmdZoomP))
-                        .addGroup(gl.createParallelGroup()
-                                .addComponent(cmdRY)
-                                .addComponent(cmdZoomN))
-                        .addComponent(cmdRZ)
+                        .addGroup(
+                                gl.createParallelGroup()
+                                        .addComponent(cmdRXP)
+                                        .addComponent(cmdRXN)
+                                        .addComponent(cmdZoomP))
+                        .addGroup(
+                                gl.createParallelGroup()
+                                        .addComponent(cmdRYP)
+                                        .addComponent(cmdRYN)
+                                        .addComponent(cmdZoomN))
+                        .addGroup(
+                                gl.createParallelGroup()
+                                        .addComponent(cmdRZP)
+                                        .addComponent(cmdRZN)
+                                        .addComponent(cmdReset))
                         .addComponent(cmdArriba)
-                        .addGroup(gl.createParallelGroup()
-                                .addComponent(cmdIzquierda)
-                                .addComponent(cmdAbajo)
-                                .addComponent(cmdDerecha)));
+                        .addGroup(
+                                gl.createParallelGroup()
+                                        .addComponent(cmdIzquierda)
+                                        .addComponent(cmdAbajo)
+                                        .addComponent(cmdDerecha)
+                        )
+        );
+
         setLayout(gl);
     }
 
@@ -164,14 +202,23 @@ public class CubeGUI extends JFrame implements ActionListener {
             posicion.x -= 10;
         } else if (e.getSource() == cmdDerecha) {
             posicion.x += 10;
-        } else if (e.getSource() == cmdRX) {
+        } else if (e.getSource() == cmdRXP) {
             rx += 5;
             cubo.setRotationX(rx);
-        } else if (e.getSource() == cmdRY) {
+        } else if (e.getSource() == cmdRYP) {
             ry += 5;
             cubo.setRotationY(ry);
-        } else if (e.getSource() == cmdRZ) {
+        } else if (e.getSource() == cmdRZP) {
             rz += 5;
+            cubo.setRotationZ(rz);
+        } else if (e.getSource() == cmdRXN) {
+            rx -= 5;
+            cubo.setRotationX(rx);
+        } else if (e.getSource() == cmdRYN) {
+            ry -= 5;
+            cubo.setRotationY(ry);
+        } else if (e.getSource() == cmdRZN) {
+            rz -= 5;
             cubo.setRotationZ(rz);
         } else if (e.getSource() == cmdZoomP) {
             scale += 0.1;
@@ -180,6 +227,18 @@ public class CubeGUI extends JFrame implements ActionListener {
             if (scale - 0.1 > 0) {
                 scale -= 0.1;
             }
+            cubo.setScale(scale);
+        } else if (e.getSource() == cmdReset) {
+            rx = 0;
+            ry = 0;
+            rz = 0;
+            scale = 1;
+            posicion.x = origen.x;
+            posicion.y = origen.y;
+
+            cubo.setRotationX(rx);
+            cubo.setRotationY(ry);
+            cubo.setRotationZ(rz);
             cubo.setScale(scale);
         }
 
